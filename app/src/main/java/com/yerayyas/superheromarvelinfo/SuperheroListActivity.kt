@@ -6,13 +6,12 @@ import android.util.Log
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroDataResponse
-import com.yerayyas.superheromarvelinfo.data.model.SuperheroItemResponse
 import com.yerayyas.superheromarvelinfo.databinding.ActivitySuperheroListBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -29,6 +28,9 @@ class SuperheroListActivity : AppCompatActivity() {
 
         retrofit = getRetrofit()
         setupUI()
+
+        // Llamar a la función para cargar todos los superhéroes
+        loadAllSuperheroes()
     }
 
     private fun setupUI() {
@@ -42,46 +44,64 @@ class SuperheroListActivity : AppCompatActivity() {
         })
 
         adapter = SuperheroAdapter()
-
-            binding.rvSuperhero.setHasFixedSize(true)
-            binding.rvSuperhero.layoutManager = LinearLayoutManager(this@SuperheroListActivity)
-            binding.rvSuperhero.adapter = adapter
-
+        binding.rvSuperhero.setHasFixedSize(true)
+        binding.rvSuperhero.layoutManager = LinearLayoutManager(this@SuperheroListActivity)
+        binding.rvSuperhero.adapter = adapter
     }
 
-    private fun searchByName(query: String) {
-        Log.d("rrrr", "Search query: $query")
+    private fun loadAllSuperheroes() {
         binding.pbSuperhero.isVisible = true
 
         val apiKey = "3de6bbd5de0a40038da2c8fe677fb23b"
         val hash = "56feb160b3d944895040bec40ead241b"
         val ts = 1
-        // Secondary thread
+
         CoroutineScope(Dispatchers.IO).launch {
             val myResponse = retrofit
                 .create(ApiService::class.java)
-                .getSuperheroByName(query, apiKey, hash, ts)
+                .getSuperheroes(apiKey, hash, ts)
 
-            if (myResponse.isSuccessful){
-                Log.d("rrrr", "API call successful")
-                Log.i("chochocho", "it works :)")
-                val response:SuperheroDataResponse? = myResponse.body()
-                if (response != null){
-                    Log.d("rrrr", "Response data: ${response.data.superheroes}")
-                    Log.i("chochocho", response.toString())
+            if (myResponse.isSuccessful) {
+                val response: SuperheroDataResponse? = myResponse.body()
+                if (response != null) {
                     runOnUiThread {
                         adapter.updateList(response.data.superheroes)
-                        Log.d("rrrr", "recyclerview updated")
                         binding.pbSuperhero.isVisible = false
                     }
                 }
-
-            }else{
+            } else {
                 Log.d("rrrr", "API call not successful")
-                Log.i("chochocho", "it doesn't work :(")
             }
         }
     }
+
+    private fun searchByName(query: String) {
+        binding.pbSuperhero.isVisible = true
+
+        val apiKey = "3de6bbd5de0a40038da2c8fe677fb23b"
+        val hash = "56feb160b3d944895040bec40ead241b"
+        val ts = 1
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response: SuperheroDataResponse? = if (query.isBlank()) {
+                runBlocking {
+                    retrofit.create(ApiService::class.java).getSuperheroes(apiKey, hash, ts).body()
+                }
+            } else {
+                runBlocking {
+                    retrofit.create(ApiService::class.java).getSuperheroByName(query, apiKey, hash, ts).body()
+                }
+            }
+
+            runOnUiThread {
+                if (response != null) {
+                    adapter.updateList(response.data.superheroes)
+                }
+                binding.pbSuperhero.isVisible = false
+            }
+        }
+    }
+
 
 
     private fun getRetrofit(): Retrofit {
