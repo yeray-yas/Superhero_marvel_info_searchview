@@ -1,7 +1,7 @@
 package com.yerayyas.superheromarvelinfo
 
+import com.yerayyas.superheromarvelinfo.data.imageModel.ImageDatasResult
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroDataResponse
-import com.yerayyas.superheromarvelinfo.data.model.SuperheroResultsResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -30,5 +30,5 @@ interface ApiService {
         @Query("apikey") apiKey: String,
         @Query("hash") hash: String,
         @Query("ts") ts: Int
-    ): Response<SuperheroResultsResponse>
+    ): Response<ImageDatasResult>
 }
