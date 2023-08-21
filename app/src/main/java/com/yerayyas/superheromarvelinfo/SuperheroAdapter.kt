@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroItemResponse
 
-class SuperheroAdapter(private var superheroList: List<SuperheroItemResponse> = emptyList()) :
+class SuperheroAdapter(
+    private var superheroList: List<SuperheroItemResponse> = emptyList(),
+    private val onItemSelected: (Int) -> Unit
+) :
     RecyclerView.Adapter<SuperheroViewHolder>() {
 
     // Método para actualizar la lista de superhéroes y notificar cambios
@@ -28,7 +31,7 @@ class SuperheroAdapter(private var superheroList: List<SuperheroItemResponse> = 
     override fun onBindViewHolder(holder: SuperheroViewHolder, position: Int) {
         val superheroItem = superheroList[position]
         Log.d("fuj", "Binding superhero at position $position: ${superheroItem.name}")
-        holder.bind(superheroItem)
+        holder.bind(superheroItem, onItemSelected)
     }
 
     override fun getItemCount() = superheroList.size

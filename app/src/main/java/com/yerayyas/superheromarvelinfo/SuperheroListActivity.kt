@@ -1,11 +1,13 @@
 package com.yerayyas.superheromarvelinfo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.yerayyas.superheromarvelinfo.DetailSuperheroActivity.Companion.EXTRA_ID
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroDataResponse
 import com.yerayyas.superheromarvelinfo.databinding.ActivitySuperheroListBinding
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +45,9 @@ class SuperheroListActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?) = false
         })
 
-        adapter = SuperheroAdapter()
+        adapter = SuperheroAdapter { superheroId -> // "Generic it" have been replaced by "superheroId"
+            navigateToDetail(superheroId)
+        }
         binding.rvSuperhero.setHasFixedSize(true)
         binding.rvSuperhero.layoutManager = LinearLayoutManager(this@SuperheroListActivity)
         binding.rvSuperhero.adapter = adapter
@@ -89,7 +93,8 @@ class SuperheroListActivity : AppCompatActivity() {
                 }
             } else {
                 runBlocking {
-                    retrofit.create(ApiService::class.java).getSuperheroByName(query, apiKey, hash, ts).body()
+                    retrofit.create(ApiService::class.java)
+                        .getSuperheroByName(query, apiKey, hash, ts).body()
                 }
             }
 
@@ -103,12 +108,17 @@ class SuperheroListActivity : AppCompatActivity() {
     }
 
 
-
     private fun getRetrofit(): Retrofit {
         return Retrofit
             .Builder()
             .baseUrl("https://gateway.marvel.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    private fun navigateToDetail(id: Int) {
+        val intent = Intent(this, DetailSuperheroActivity::class.java)
+        intent.putExtra(EXTRA_ID, id)
+        startActivity(intent)
     }
 }

@@ -1,5 +1,6 @@
 package com.yerayyas.superheromarvelinfo
 
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.squareup.picasso.Picasso
@@ -10,9 +11,12 @@ class SuperheroViewHolder(view: View) : ViewHolder(view) {
 
     private val binding = ItemSuperheroBinding.bind(view)
 
-    fun bind(superheroItemResponse: SuperheroItemResponse) {
+    fun bind(superheroItemResponse: SuperheroItemResponse, onItemSelected: (Int) -> Unit) {
 
+        // Superhero name
         binding.tvSuperheroName.text = superheroItemResponse.name
+
+        // Superhero image
         val imageUrl =
             "${superheroItemResponse.thumbnail.path}.${superheroItemResponse.thumbnail.extension}"
 
@@ -21,6 +25,12 @@ class SuperheroViewHolder(view: View) : ViewHolder(view) {
 
         } else {
             Picasso.get().load(imageUrl).into(binding.ivSuperhero)
+        }
+
+        // Every single cardview, in each click
+        binding.root.setOnClickListener {
+            onItemSelected(superheroItemResponse.superheroId)
+            Log.i("SHH", "Superhero ID: ${superheroItemResponse.superheroId}")
         }
     }
 }
