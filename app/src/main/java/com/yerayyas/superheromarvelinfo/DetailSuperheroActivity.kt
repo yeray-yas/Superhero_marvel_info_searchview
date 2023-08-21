@@ -87,6 +87,9 @@ class DetailSuperheroActivity : AppCompatActivity() {
             Picasso.get().load(R.drawable.marvel_image_not_found).into(binding.ivSuperhero)
 
         }
+
+        binding.tvSuperheroName.text = superhero.data.results[0].name
+        binding.tvSuperheroDescription.text = superhero.data.results[0].description
     }
 
     private fun getRetrofit(): Retrofit {
