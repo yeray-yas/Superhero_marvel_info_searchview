@@ -1,7 +1,10 @@
 package com.yerayyas.superheromarvelinfo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.squareup.picasso.Picasso
+import com.yerayyas.superheromarvelinfo.data.model.SuperheroResultsResponse
+import com.yerayyas.superheromarvelinfo.databinding.ActivityDetailSuperheroBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,13 +17,16 @@ class DetailSuperheroActivity : AppCompatActivity() {
         const val EXTRA_ID = "extra_id"
     }
 
+    private lateinit var binding: ActivityDetailSuperheroBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail_superhero)
+        binding = ActivityDetailSuperheroBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val id: Int = intent.getIntExtra(EXTRA_ID, -1)
 
-        getSuperheroInfo(id)
+        //getSuperheroInfo(id)
     }
 
     private fun getSuperheroInfo(id: Int) {
@@ -31,7 +37,21 @@ class DetailSuperheroActivity : AppCompatActivity() {
             val superheroDetail = getRetrofit()
                 .create(ApiService::class.java)
                 .getSuperheroesDetail(id, apiKey, hash, ts)
+            val response = superheroDetail.body()
+            if (response != null) {
+                runOnUiThread {
+                    createUI(response)
+                }
+
+            }
         }
+    }
+
+    private fun createUI(superhero: SuperheroResultsResponse) {
+        // Superhero image
+        val imageUrl =
+            "${superhero.thumbnail.path}.${superhero.thumbnail.extension}"
+        Picasso.get().load(imageUrl).into(binding.ivSuperhero)
     }
 
     private fun getRetrofit(): Retrofit {
