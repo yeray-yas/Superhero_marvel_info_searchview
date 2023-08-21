@@ -28,7 +28,9 @@ class DetailSuperheroActivity : AppCompatActivity() {
         val hash = "56feb160b3d944895040bec40ead241b"
         val ts = 1
         CoroutineScope(Dispatchers.IO).launch {
-            getRetrofit().create(ApiService::class.java).getSuperheroesDetail(id, apiKey, hash, ts)
+            val superheroDetail = getRetrofit()
+                .create(ApiService::class.java)
+                .getSuperheroesDetail(id, apiKey, hash, ts)
         }
     }
 
