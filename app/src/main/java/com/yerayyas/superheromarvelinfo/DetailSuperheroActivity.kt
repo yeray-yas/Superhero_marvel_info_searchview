@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.squareup.picasso.Picasso
 import com.yerayyas.superheromarvelinfo.data.imageModel.ImageDatasResult
 import com.yerayyas.superheromarvelinfo.databinding.ActivityDetailSuperheroBinding
@@ -29,13 +27,22 @@ class DetailSuperheroActivity : AppCompatActivity() {
 
         val id: Int = intent.getIntExtra(EXTRA_ID, -1)
 
-        // We observe the changes in the superheroes list
+        // Observe the error state
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.superheroInfo.collect { superhero ->
-                    superhero?.let {
-                        createUI(it)
-                    }
+            viewModel.errorState.collect { hasError ->
+                if (hasError) {
+                    // Handle the error, show an error message, etc.
+                    // For example, you can display an error message in a TextView.
+                   Log.i("DSA", "An error occurred while loading superhero details")
+                }
+            }
+        }
+
+        // Observe the superhero details
+        lifecycleScope.launch {
+            viewModel.superheroInfo.collect { superhero ->
+                superhero?.let {
+                    createUI(it)
                 }
             }
         }
@@ -60,3 +67,4 @@ class DetailSuperheroActivity : AppCompatActivity() {
         binding.tvSuperheroDescription.text = superhero.data.results[0].description
     }
 }
+
