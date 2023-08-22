@@ -31,7 +31,7 @@ class SuperheroListActivity : AppCompatActivity() {
         retrofit = getRetrofit()
         setupUI()
 
-        // Llamar a la función para cargar todos los superhéroes
+        // We call the function to load all superheroes
         loadAllSuperheroes()
     }
 
