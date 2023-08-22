@@ -77,8 +77,12 @@ class DetailSuperheroActivity : AppCompatActivity() {
             Log.d("DSA", "Thumbnail Path: ${thumbnail.path}")
             Log.d("DSA", "Thumbnail Extension: ${thumbnail.extension}")
             val imageUrl = "${thumbnail.path}.${thumbnail.extension}"
-            Log.d("DSA", "Image URL: $imageUrl")
-            Picasso.get().load(imageUrl).into(binding.ivSuperhero)
+            if (imageUrl.contains("image_not_available")) {
+                Picasso.get().load(R.drawable.marvel_image_not_found).into(binding.ivSuperhero)
+
+            } else {
+                Picasso.get().load(imageUrl).into(binding.ivSuperhero)
+            }
         } else {
             Log.e("DSA", "Thumbnail is null")
             Toast.makeText(this, "An error occurred", Toast.LENGTH_SHORT).show()
