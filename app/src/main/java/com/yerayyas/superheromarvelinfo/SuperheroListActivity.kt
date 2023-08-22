@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yerayyas.superheromarvelinfo.DetailSuperheroActivity.Companion.EXTRA_ID
 import com.yerayyas.superheromarvelinfo.databinding.ActivitySuperheroListBinding
+import com.yerayyas.superheromarvelinfo.viewModel.SuperheroListState
 import com.yerayyas.superheromarvelinfo.viewModel.SuperheroListViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -19,12 +21,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SuperheroListActivity : AppCompatActivity() {
 
-    private val viewModel: SuperheroListViewModel by viewModels()
-
-
     private lateinit var binding: ActivitySuperheroListBinding
     private lateinit var retrofit: Retrofit
     private lateinit var adapter: SuperheroAdapter
+    private val viewModel: SuperheroListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +34,19 @@ class SuperheroListActivity : AppCompatActivity() {
         retrofit = getRetrofit()
         setupUI()
 
-        // We call the function to load all superheroes at start
-        viewModel.loadAllSuperheroes()
+
+
+        // We observe the load state
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loadingState.collect { state ->
+                    when (state) {
+                        SuperheroListState.LOADING -> binding.pbSuperhero.isVisible = true
+                        else -> binding.pbSuperhero.isVisible = false
+                    }
+                }
+            }
+        }
 
         // We observe the changes in the superheroes list
         lifecycleScope.launch {
@@ -45,6 +56,9 @@ class SuperheroListActivity : AppCompatActivity() {
                 }
             }
         }
+
+        // We call the function to load all superheroes at start
+        viewModel.loadAllSuperheroes()
     }
 
     private fun setupUI() {
