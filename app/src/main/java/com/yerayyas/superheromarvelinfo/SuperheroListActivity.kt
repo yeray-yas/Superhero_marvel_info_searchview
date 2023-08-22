@@ -34,8 +34,6 @@ class SuperheroListActivity : AppCompatActivity() {
         retrofit = getRetrofit()
         setupUI()
 
-
-
         // We observe the load state
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
