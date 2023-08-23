@@ -12,11 +12,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yerayyas.superheromarvelinfo.DetailSuperheroActivity.Companion.EXTRA_ID
 import com.yerayyas.superheromarvelinfo.databinding.ActivitySuperheroListBinding
+import com.yerayyas.superheromarvelinfo.util.ApiManager
 import com.yerayyas.superheromarvelinfo.viewModel.SuperheroListState
 import com.yerayyas.superheromarvelinfo.viewModel.SuperheroListViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class SuperheroListActivity : AppCompatActivity() {
@@ -31,7 +31,7 @@ class SuperheroListActivity : AppCompatActivity() {
         binding = ActivitySuperheroListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        retrofit = getRetrofit()
+        retrofit = ApiManager.retrofit
         setupUI()
 
         // We observe the load state
@@ -75,14 +75,6 @@ class SuperheroListActivity : AppCompatActivity() {
         binding.rvSuperhero.setHasFixedSize(true)
         binding.rvSuperhero.layoutManager = LinearLayoutManager(this@SuperheroListActivity)
         binding.rvSuperhero.adapter = adapter
-    }
-
-    private fun getRetrofit(): Retrofit {
-        return Retrofit
-            .Builder()
-            .baseUrl("https://gateway.marvel.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
     }
 
     private fun navigateToDetail(id: Int) {

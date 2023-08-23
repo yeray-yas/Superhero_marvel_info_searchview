@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yerayyas.superheromarvelinfo.ApiService
 import com.yerayyas.superheromarvelinfo.data.imageModel.ImageDatasResult
+import com.yerayyas.superheromarvelinfo.util.ApiManager
+import com.yerayyas.superheromarvelinfo.util.Constants.API_KEY
+import com.yerayyas.superheromarvelinfo.util.Constants.HASH
+import com.yerayyas.superheromarvelinfo.util.Constants.TS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class DetailSuperheroViewModel : ViewModel() {
     private val _superheroInfo = MutableStateFlow<ImageDatasResult?>(null)
@@ -17,18 +20,18 @@ class DetailSuperheroViewModel : ViewModel() {
     private val _errorState = MutableStateFlow<Boolean>(false)
     val errorState: StateFlow<Boolean> = _errorState
 
+    private val retrofit: Retrofit = ApiManager.retrofit
+
     fun getSuperheroInfo(id: Int) {
-        val apiKey = "3de6bbd5de0a40038da2c8fe677fb23b"
-        val hash = "56feb160b3d944895040bec40ead241b"
-        val ts = 1
+
 
         _errorState.value = false
 
         viewModelScope.launch {
             try {
-                val superheroDetail = getRetrofit()
+                val superheroDetail = retrofit
                     .create(ApiService::class.java)
-                    .getSuperheroesDetail(id, apiKey, hash, ts)
+                    .getSuperheroesDetail(id, API_KEY, HASH, TS)
 
                 val response = superheroDetail.body()
                 response?.let {
@@ -40,13 +43,5 @@ class DetailSuperheroViewModel : ViewModel() {
                 _errorState.value = true
             }
         }
-    }
-
-    private fun getRetrofit(): Retrofit {
-        return Retrofit
-            .Builder()
-            .baseUrl("https://gateway.marvel.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
     }
 }
