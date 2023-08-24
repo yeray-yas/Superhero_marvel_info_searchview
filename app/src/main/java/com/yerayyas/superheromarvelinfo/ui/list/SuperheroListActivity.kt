@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,7 @@ import com.yerayyas.superheromarvelinfo.network.ApiManager
 import com.yerayyas.superheromarvelinfo.network.ApiService
 import com.yerayyas.superheromarvelinfo.ui.adapters.SuperheroAdapter
 import com.yerayyas.superheromarvelinfo.ui.detail.DetailSuperheroActivity
+import com.yerayyas.superheromarvelinfo.ui.detail.DetailSuperheroViewModel
 import com.yerayyas.superheromarvelinfo.util.SuperheroListViewModelFactory
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -28,14 +31,9 @@ class SuperheroListActivity : AppCompatActivity() {
     private lateinit var retrofit: Retrofit
     private lateinit var adapter: SuperheroAdapter
     private lateinit var repository: SuperheroRepository
+    private val viewModel: SuperheroListViewModel by viewModels()
 
-    private val viewModelFactory: SuperheroListViewModelFactory by lazy {
-        SuperheroListViewModelFactory(repository)
-    }
 
-    private val viewModel: SuperheroListViewModel by viewModels {
-        viewModelFactory
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +43,9 @@ class SuperheroListActivity : AppCompatActivity() {
         // Inicializa el repository aquí
         val apiService = ApiManager.retrofit.create(ApiService::class.java)
         repository = SuperheroRepository(apiService)
+
+        // Inicializa savedStateHandle con el estado guardado
+        val savedStateHandle = SavedStateHandle()
 
         retrofit = ApiManager.retrofit
         setupUI()
@@ -71,13 +72,13 @@ class SuperheroListActivity : AppCompatActivity() {
         }
 
         // We call the function to load all superheroes at start
-        viewModel.loadAllSuperheroes()
+
     }
 
     private fun setupUI() {
         binding.svSuperhero.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                viewModel.searchByName(query.orEmpty())
+                viewModel.updateSearchQuery(query.orEmpty())
                 return false
             }
 

@@ -23,38 +23,45 @@ class SuperheroListViewModel(private val repository: SuperheroRepository) : View
     private val _loadingState = MutableStateFlow(SuperheroListState.LOADING)
     val loadingState: StateFlow<SuperheroListState> = _loadingState
 
-    var searchQuery: String = ""
-    private var superheroes: List<SuperheroItemResponse> = emptyList()
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
 
-    fun searchByName(query: String) {
+    init {
         viewModelScope.launch {
-            _loadingState.value = SuperheroListState.LOADING
+            try {
+                val superheroes = repository.getSuperheroes()
+                _superheroesState.emit(superheroes)
+                _loadingState.emit(SuperheroListState.LOADED)
+            } catch (e: ApiCallException) {
+                _loadingState.emit(SuperheroListState.ERROR)
+            }
+        }
+
+        viewModelScope.launch {
+            _searchQuery.collect { query ->
+                performSearch(query)
+            }
+        }
+    }
+
+    private fun performSearch(query: String) {
+        viewModelScope.launch {
+            _loadingState.emit(SuperheroListState.LOADING)
             try {
                 val superheroes = if (query.isBlank()) {
                     repository.getSuperheroes()
                 } else {
                     repository.searchSuperheroesByName(query)
                 }
-                val updatedSuperheroes = superheroes // Guardar el resultado en una variable local
-                this@SuperheroListViewModel.superheroes = updatedSuperheroes // Actualizar la lista de superheroes directamente
-                _superheroesState.emit(updatedSuperheroes)
-                _loadingState.value = SuperheroListState.LOADED
+                _superheroesState.emit(superheroes)
+                _loadingState.emit(SuperheroListState.LOADED)
             } catch (e: ApiCallException) {
-                _loadingState.value = SuperheroListState.ERROR
+                _loadingState.emit(SuperheroListState.ERROR)
             }
         }
     }
 
-    fun loadAllSuperheroes() {
-        viewModelScope.launch {
-            _loadingState.value = SuperheroListState.LOADING
-            try {
-                val superheroes = repository.getSuperheroes()
-                _superheroesState.emit(superheroes)
-                _loadingState.value = SuperheroListState.LOADED
-            } catch (e: ApiCallException) {
-                _loadingState.value = SuperheroListState.ERROR
-            }
-        }
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
     }
 }
