@@ -1,12 +1,12 @@
-package com.yerayyas.superheromarvelinfo.viewModel
+package com.yerayyas.superheromarvelinfo.ui.list
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yerayyas.superheromarvelinfo.ApiService
+import com.yerayyas.superheromarvelinfo.network.ApiService
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroDataResponse
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroItemResponse
-import com.yerayyas.superheromarvelinfo.util.ApiManager
+import com.yerayyas.superheromarvelinfo.network.ApiManager
 import com.yerayyas.superheromarvelinfo.util.Constants.API_KEY
 import com.yerayyas.superheromarvelinfo.util.Constants.HASH
 import com.yerayyas.superheromarvelinfo.util.Constants.TS

@@ -1,4 +1,4 @@
-package com.yerayyas.superheromarvelinfo
+package com.yerayyas.superheromarvelinfo.ui.detail
 
 import android.os.Bundle
 import android.util.Log
@@ -6,9 +6,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.squareup.picasso.Picasso
-import com.yerayyas.superheromarvelinfo.data.imageModel.ImageDatasResult
+import com.yerayyas.superheromarvelinfo.R
+import com.yerayyas.superheromarvelinfo.data.model.detailModel.ImageDatasResult
 import com.yerayyas.superheromarvelinfo.databinding.ActivityDetailSuperheroBinding
-import com.yerayyas.superheromarvelinfo.viewModel.DetailSuperheroViewModel
 import kotlinx.coroutines.launch
 
 class DetailSuperheroActivity : AppCompatActivity() {

@@ -1,6 +1,6 @@
 package com.yerayyas.superheromarvelinfo.di
 
-import com.yerayyas.superheromarvelinfo.ApiService
+import com.yerayyas.superheromarvelinfo.network.ApiService
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

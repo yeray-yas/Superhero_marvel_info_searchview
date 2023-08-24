@@ -1,4 +1,4 @@
-package com.yerayyas.superheromarvelinfo.util
+package com.yerayyas.superheromarvelinfo.network
 
 import com.yerayyas.superheromarvelinfo.util.Constants.BASE_URL
 import retrofit2.Retrofit

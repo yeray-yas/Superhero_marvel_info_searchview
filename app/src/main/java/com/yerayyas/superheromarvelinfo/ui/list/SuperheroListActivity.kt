@@ -1,4 +1,4 @@
-package com.yerayyas.superheromarvelinfo
+package com.yerayyas.superheromarvelinfo.ui.list
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,11 +10,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yerayyas.superheromarvelinfo.DetailSuperheroActivity.Companion.EXTRA_ID
+import com.yerayyas.superheromarvelinfo.ui.detail.DetailSuperheroActivity.Companion.EXTRA_ID
 import com.yerayyas.superheromarvelinfo.databinding.ActivitySuperheroListBinding
-import com.yerayyas.superheromarvelinfo.util.ApiManager
-import com.yerayyas.superheromarvelinfo.viewModel.SuperheroListState
-import com.yerayyas.superheromarvelinfo.viewModel.SuperheroListViewModel
+import com.yerayyas.superheromarvelinfo.network.ApiManager
+import com.yerayyas.superheromarvelinfo.ui.adapters.SuperheroAdapter
+import com.yerayyas.superheromarvelinfo.ui.detail.DetailSuperheroActivity
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 

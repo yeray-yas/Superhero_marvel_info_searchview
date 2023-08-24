@@ -1,6 +1,6 @@
-package com.yerayyas.superheromarvelinfo
+package com.yerayyas.superheromarvelinfo.network
 
-import com.yerayyas.superheromarvelinfo.data.imageModel.ImageDatasResult
+import com.yerayyas.superheromarvelinfo.data.model.detailModel.ImageDatasResult
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroDataResponse
 import retrofit2.Response
 import retrofit2.http.GET

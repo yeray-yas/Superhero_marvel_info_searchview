@@ -1,13 +1,14 @@
-package com.yerayyas.superheromarvelinfo
+package com.yerayyas.superheromarvelinfo.ui.list
 
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.squareup.picasso.Picasso
+import com.yerayyas.superheromarvelinfo.R
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroItemResponse
 import com.yerayyas.superheromarvelinfo.databinding.ItemSuperheroBinding
 
-class SuperheroViewHolder(view: View) : ViewHolder(view) {
+class SuperheroListViewHolder(view: View) : ViewHolder(view) {
 
     private val binding = ItemSuperheroBinding.bind(view)
 
