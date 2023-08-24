@@ -3,7 +3,7 @@ package com.yerayyas.superheromarvelinfo.ui.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yerayyas.superheromarvelinfo.network.ApiService
-import com.yerayyas.superheromarvelinfo.data.model.detailModel.ImageDatasResult
+import com.yerayyas.superheromarvelinfo.data.model.ImageDatasResult
 import com.yerayyas.superheromarvelinfo.network.ApiManager
 import com.yerayyas.superheromarvelinfo.util.Constants.API_KEY
 import com.yerayyas.superheromarvelinfo.util.Constants.HASH

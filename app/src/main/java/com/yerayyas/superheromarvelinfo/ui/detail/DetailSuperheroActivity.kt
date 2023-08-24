@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.squareup.picasso.Picasso
 import com.yerayyas.superheromarvelinfo.R
-import com.yerayyas.superheromarvelinfo.data.model.detailModel.ImageDatasResult
+import com.yerayyas.superheromarvelinfo.data.model.ImageDatasResult
 import com.yerayyas.superheromarvelinfo.databinding.ActivityDetailSuperheroBinding
 import kotlinx.coroutines.launch
 
@@ -33,7 +33,7 @@ class DetailSuperheroActivity : AppCompatActivity() {
                 if (hasError) {
                     // Handle the error, show an error message, etc.
                     // For example, you can display an error message in a TextView.
-                   Log.i("DSA", "An error occurred while loading superhero details")
+                    Log.i("DSA", "An error occurred while loading superhero details")
                 }
             }
         }
@@ -67,4 +67,5 @@ class DetailSuperheroActivity : AppCompatActivity() {
         binding.tvSuperheroDescription.text = superhero.data.results[0].description
     }
 }
+
 

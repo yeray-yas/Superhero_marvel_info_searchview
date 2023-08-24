@@ -1,4 +1,4 @@
-package com.yerayyas.superheromarvelinfo.data.model.detailModel
+package com.yerayyas.superheromarvelinfo.data.model
 
 
 import com.google.gson.annotations.SerializedName

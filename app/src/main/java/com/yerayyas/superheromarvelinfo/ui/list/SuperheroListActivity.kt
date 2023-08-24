@@ -10,11 +10,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.yerayyas.superheromarvelinfo.data.repository.SuperheroRepository
 import com.yerayyas.superheromarvelinfo.ui.detail.DetailSuperheroActivity.Companion.EXTRA_ID
 import com.yerayyas.superheromarvelinfo.databinding.ActivitySuperheroListBinding
 import com.yerayyas.superheromarvelinfo.network.ApiManager
+import com.yerayyas.superheromarvelinfo.network.ApiService
 import com.yerayyas.superheromarvelinfo.ui.adapters.SuperheroAdapter
 import com.yerayyas.superheromarvelinfo.ui.detail.DetailSuperheroActivity
+import com.yerayyas.superheromarvelinfo.util.SuperheroListViewModelFactory
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 
@@ -24,12 +27,24 @@ class SuperheroListActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySuperheroListBinding
     private lateinit var retrofit: Retrofit
     private lateinit var adapter: SuperheroAdapter
-    private val viewModel: SuperheroListViewModel by viewModels()
+    private lateinit var repository: SuperheroRepository
+
+    private val viewModelFactory: SuperheroListViewModelFactory by lazy {
+        SuperheroListViewModelFactory(repository)
+    }
+
+    private val viewModel: SuperheroListViewModel by viewModels {
+        viewModelFactory
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySuperheroListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Inicializa el repository aquí
+        val apiService = ApiManager.retrofit.create(ApiService::class.java)
+        repository = SuperheroRepository(apiService)
 
         retrofit = ApiManager.retrofit
         setupUI()
