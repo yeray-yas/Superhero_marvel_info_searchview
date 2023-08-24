@@ -23,10 +23,7 @@ class DetailSuperheroViewModel : ViewModel() {
     private val retrofit: Retrofit = ApiManager.retrofit
 
     fun getSuperheroInfo(id: Int) {
-
-
         _errorState.value = false
-
         viewModelScope.launch {
             try {
                 val superheroDetail = retrofit
