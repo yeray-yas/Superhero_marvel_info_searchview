@@ -14,14 +14,15 @@ interface ApiService {
         @Query("nameStartsWith") nameStartsWith: String,
         @Query("apikey") apiKey: String,
         @Query("hash") hash: String,
-        @Query("ts") ts: Int
+        @Query("ts") ts: Long
     ): Response<SuperheroDataResponse>
 
     @GET("/v1/public/characters")
     suspend fun getSuperheroes(
+        @Query("offset") offset: Int? = 0,
         @Query("apikey") apiKey: String,
         @Query("hash") hash: String,
-        @Query("ts") ts: Int
+        @Query("ts") ts: Long
     ): Response<SuperheroDataResponse>
 
     @GET("/v1/public/characters/{characterId}")
@@ -29,6 +30,6 @@ interface ApiService {
         @Path("characterId") characterId: Int,
         @Query("apikey") apiKey: String,
         @Query("hash") hash: String,
-        @Query("ts") ts: Int
+        @Query("ts") ts: Long
     ): Response<ImageDatasResult>
 }

@@ -1,5 +1,10 @@
 package com.yerayyas.superheromarvelinfo.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import com.yerayyas.superheromarvelinfo.data.SuperheroPagingSource
 import com.yerayyas.superheromarvelinfo.data.model.ImageDatasResult
 import com.yerayyas.superheromarvelinfo.data.model.SuperheroItemResponse
 import com.yerayyas.superheromarvelinfo.network.ApiService
@@ -7,18 +12,37 @@ import com.yerayyas.superheromarvelinfo.util.ApiCallException
 import com.yerayyas.superheromarvelinfo.util.Constants.API_KEY
 import com.yerayyas.superheromarvelinfo.util.Constants.HASH
 import com.yerayyas.superheromarvelinfo.util.Constants.TS
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class SuperheroRepository(private val apiService: ApiService) {
 
-    suspend fun getSuperheroes(): List<SuperheroItemResponse> {
-        val response = apiService.getSuperheroes(API_KEY, HASH, TS)
-        if (response.isSuccessful) {
-            return response.body()?.data?.superheroes ?: emptyList()
-        } else {
-            // Manejo de errores en caso de que la llamada no sea exitosa
-            throw ApiCallException("Superheroes API call not successful")
-        }
+    fun getSuperheroesByNamePaged(query: String): Flow<PagingData<SuperheroItemResponse>> {
+        return Pager(
+            config = PagingConfig(pageSize = SuperheroPagingSource.PAGE_SIZE),
+            pagingSourceFactory = { SuperheroPagingSource(apiService, query) }
+        ).flow
     }
+
+    suspend fun refreshSuperheroes(): Flow<PagingData<SuperheroItemResponse>> {
+        val pagingSourceFactory = { SuperheroPagingSource(apiService, "") }
+
+        return Pager(
+            config = PagingConfig(pageSize = SuperheroPagingSource.PAGE_SIZE),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow
+    }
+
+
+
+//    suspend fun getSuperheroes(query): Flow<PagingData<SuperheroItemResponse>> {
+//        return Pager(
+//            config = PagingConfig(pageSize = SuperheroPagingSource.PAGE_SIZE),
+//            pagingSourceFactory = { SuperheroPagingSource(apiService, query = query) }
+//        ).flow
+//    }
 
     suspend fun getSuperheroDetail(id: Int): ImageDatasResult {
         val response = apiService.getSuperheroesDetail(id, API_KEY, HASH, TS)
@@ -46,6 +70,4 @@ class SuperheroRepository(private val apiService: ApiService) {
 
         throw ApiCallException("Error searching superheroes by name")
     }
-
-
 }

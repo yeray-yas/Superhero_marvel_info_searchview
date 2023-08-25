@@ -18,6 +18,7 @@ import com.yerayyas.superheromarvelinfo.network.ApiService
 import com.yerayyas.superheromarvelinfo.ui.adapters.SuperheroAdapter
 import com.yerayyas.superheromarvelinfo.ui.detail.DetailSuperheroActivity
 import com.yerayyas.superheromarvelinfo.util.SuperheroListViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 
@@ -61,17 +62,18 @@ class SuperheroListActivity : AppCompatActivity() {
             }
         }
 
-        // We observe the changes in the superheroes list
+        // We observe the changes in the superheroes list using the Flow
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.superheroesState.collect { superheroes ->
-                    adapter.updateList(superheroes)
+                viewModel.superheroesFlow.collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
                 }
             }
         }
 
+
         // We call the function to load all superheroes at start
-        viewModel.loadAllSuperheroes()
+        //viewModel.loadAllSuperheroes()
     }
 
     private fun setupUI() {
@@ -84,12 +86,18 @@ class SuperheroListActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?) = false
         })
 
-        adapter = SuperheroAdapter { superheroId -> // "Generic it" have been replaced by "superheroId"
+        adapter = SuperheroAdapter { superheroId ->
             navigateToDetail(superheroId)
         }
         binding.rvSuperhero.setHasFixedSize(true)
         binding.rvSuperhero.layoutManager = LinearLayoutManager(this@SuperheroListActivity)
         binding.rvSuperhero.adapter = adapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Actualizar el Paging aquí
+        viewModel.refreshData()
     }
 
     private fun navigateToDetail(id: Int) {

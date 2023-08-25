@@ -8,5 +8,7 @@ data class SuperheroDataResponse(
     @SerializedName("data")
     val `data`: Data,
     @SerializedName("status")
-    val status: String
+    val status: String,
+    @SerializedName("etag")
+    val etag: String
 )
