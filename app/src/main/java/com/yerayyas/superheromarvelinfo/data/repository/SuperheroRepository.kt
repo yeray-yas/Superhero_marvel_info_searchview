@@ -46,6 +46,4 @@ class SuperheroRepository(private val apiService: ApiService) {
 
         throw ApiCallException("Error searching superheroes by name")
     }
-
-
 }
